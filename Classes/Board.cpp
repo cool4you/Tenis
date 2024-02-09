@@ -39,6 +39,9 @@ void Board::initialize(cocos2d::Scene* scene, EBoardType boardType, int _boardSi
     board->setPosition(Vec2(600.f, 75.f));
     boardPhysicsBody = PhysicsBody::createBox(board->getContentSize());
     boardPhysicsBody->setDynamic(false);
+    boardPhysicsBody->setCollisionBitmask(0x000002);
+    boardPhysicsBody->setContactTestBitmask(true);
+    boardPhysicsBody->setVelocity(Vec2(0.f, 0.f));
     board->setPhysicsBody(boardPhysicsBody);
 
     scene->addChild(board);

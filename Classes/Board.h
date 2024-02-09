@@ -22,7 +22,6 @@ public:
 
     void setBoardSize(int size);
     void setBoardVelocity(int value);
-
 private:
     cocos2d::Node* board = nullptr;
     cocos2d::Sprite* boardSprite = nullptr;

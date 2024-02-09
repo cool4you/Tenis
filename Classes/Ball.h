@@ -1,13 +1,16 @@
-#ifndef __BALL_H__
-#define __BALL_H__
+#pragma once
 
 #include "cocos2d.h"
 
-class Ball : public cocos2d::Sprite
+class Ball
 {
 public:
-    Ball* createBall(const std::string& filename);
-    bool initBall(const std::string& filename);
-};
+    Ball();
+    ~Ball();
 
-#endif // __BALL_H__
+   // void initialize(cocos2d::Scene* scene, EBoardType ballType);
+
+private:
+    cocos2d::Sprite* ballSprite = nullptr;
+    cocos2d::PhysicsBody* ballPhysicsBody = nullptr;
+};

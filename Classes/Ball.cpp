@@ -2,26 +2,12 @@
 
 USING_NS_CC;
 
-Ball* Ball::createBall(const std::string& filename)
+Ball::Ball()
 {
-    Ball* ball = new Ball();
-    if (ball && ball->initBall(filename))
-    {
-        ball->autorelease();
-        return ball;
-    }
-    CC_SAFE_DELETE(ball);
-    return nullptr;
 }
 
-bool Ball::initBall(const std::string& filename)
+Ball::~Ball()
 {
-    if (!Sprite::initWithFile(filename))
-    {
-        return false;
-    }
-
-    // Дополнительная инициализация мяча (если необходимо)
-
-    return true;
 }
+
+

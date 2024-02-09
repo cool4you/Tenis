@@ -34,12 +34,11 @@ bool GameScene::init()
 	backgroundField->setContentSize(Size(1200, 800));
 	auto physicsBody = PhysicsBody::createEdgeBox(Size(1200, 800), PhysicsMaterial(0.1f, 1.0f, 0.0f));
 	physicsBody->setDynamic(false);
-	physicsBody->setContactTestBitmask(0x000001);
+	physicsBody->setCollisionBitmask(0x000001);
+	physicsBody->setContactTestBitmask(true);
 	backgroundField->addComponent(physicsBody);
 	this->addChild(backgroundField, -1);
 
-	//GameSceneManager::createBall(this);
-	//board.initialize(this, 5, EBoardType::STICKY);
 	Start.createLevel(this, ELevel::DEFAULT);
 
 	auto listener = EventListenerKeyboard::create();
@@ -47,13 +46,13 @@ bool GameScene::init()
 	listener->onKeyReleased = CC_CALLBACK_1(GameScene::keyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
 	scheduleUpdate();
 
 	return true;
-}
-void GameScene::update(float delta)
-{
-
 }
 
 void GameScene::keyPressed(EventKeyboard::KeyCode keyCode) 
@@ -64,7 +63,7 @@ void GameScene::keyPressed(EventKeyboard::KeyCode keyCode)
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
-		Start.moveBoard(EMoveDirection::MOVE_RIGTH);
+		Start.moveBoard(EMoveDirection::MOVE_RIGHT);
 	}
 }
 
@@ -74,4 +73,16 @@ void GameScene::keyReleased(EventKeyboard::KeyCode keyCode)
 	{
 		Start.moveBoard(EMoveDirection::STOP);
 	}
+}
+
+bool GameScene::onContactBegin(cocos2d::PhysicsContact& contact)
+{
+	PhysicsBody* a = contact.getShapeA()->getBody();
+	PhysicsBody* b = contact.getShapeB()->getBody();
+
+	if ((0x000001 == a->getCollisionBitmask() && 0x000002 == b->getCollisionBitmask()) || (0x000001 == b->getCollisionBitmask() && 0x000002 == a->getCollisionBitmask()))
+	{
+		Start.moveBoard(EMoveDirection::STOP);
+	}
+	return true;
 }

@@ -11,10 +11,11 @@ public:
 	static cocos2d::Scene* createScene();
 
 	bool init() override;
-	void update(float delta);
 
 	void keyPressed(cocos2d::EventKeyboard::KeyCode keyCode);
 	void keyReleased(cocos2d::EventKeyboard::KeyCode keyCode);
+
+	bool onContactBegin(cocos2d::PhysicsContact& contact);
 
 	CREATE_FUNC(GameScene);
 	
@@ -23,6 +24,5 @@ private:
 	cocos2d::PhysicsWorld* sceneWorld;
 	bool isKeyPressed = false;
 	int move = 0;
-	Board board;
 	GameSceneManager Start;
 };

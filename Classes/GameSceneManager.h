@@ -17,7 +17,7 @@ enum class EMoveDirection
 {
 	STOP,
 	MOVE_LEFT,
-	MOVE_RIGTH
+	MOVE_RIGHT
 };
 
 class GameSceneManager
@@ -27,6 +27,5 @@ public:
 	void moveBoard(EMoveDirection moveDirection);
 
 private:
-
 	Board board;
 };
