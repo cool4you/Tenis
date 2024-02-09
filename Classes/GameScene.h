@@ -1,7 +1,7 @@
-#ifndef __GAME_SCENE_H__
-#define __GAME_SCENE_H__
+#pragma once
 
 #include "cocos2d.h"
+#include "Board.h"
 #include "GameSceneManager.h"
 #include <CCEventListenerKeyboard.h>
 
@@ -21,8 +21,8 @@ public:
 private:
 	void SetPhysicsWorld(cocos2d::PhysicsWorld* world) { sceneWorld = world; };
 	cocos2d::PhysicsWorld* sceneWorld;
-	bool isKeyPressed;
-	int move;
+	bool isKeyPressed = false;
+	int move = 0;
+	Board board;
+	GameSceneManager Start;
 };
-
-#endif // __GAME_SCENE_H__

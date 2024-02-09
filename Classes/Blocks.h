@@ -6,7 +6,7 @@
 class Block : public cocos2d::Sprite
 {
 public:
-    static Block* createBlock(const std::string& filename);
+    Block* createBlock(const std::string& filename);
     bool initBlock(const std::string& filename);
 };
 

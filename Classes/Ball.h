@@ -6,7 +6,7 @@
 class Ball : public cocos2d::Sprite
 {
 public:
-    static Ball* createBall(const std::string& filename);
+    Ball* createBall(const std::string& filename);
     bool initBall(const std::string& filename);
 };
 

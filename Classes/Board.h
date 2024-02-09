@@ -1,23 +1,35 @@
-#ifndef __BOARD_H__
-#define __BOARD_H__
+#pragma once
 
 #include "cocos2d.h"
 
-class Board : public cocos2d::Sprite
+enum class EBoardType
 {
-public:
-
-    int getBoardSize();
-    void setBoardSize(int size);
-    void setBoardVelocity(int value);
-    int getBoardVelocity();
-
-    static Board* createBoard(const std::string& filename);
-    bool initBoard(const std::string& filename);
-private:
-
-    int boardPlusSize;
-    int boardVelocity;
+    STOCK,
+    STICKY
 };
 
-#endif // __BOARD_H__
+class Board
+{
+public:
+    Board();
+    ~Board();
+
+    void initialize(cocos2d::Scene* scene,EBoardType boardType, int _boardSize = 5);
+
+    int getBoardSize() const;
+    cocos2d::Vec2 getBoardDefaultVelocity() const;
+    cocos2d::Sprite* getBoardSprite() const;
+
+    void setBoardSize(int size);
+    void setBoardVelocity(int value);
+
+private:
+    cocos2d::Node* board = nullptr;
+    cocos2d::Sprite* boardSprite = nullptr;
+    cocos2d::PhysicsBody* boardPhysicsBody = nullptr;
+    cocos2d::Vec2 boardDefaultVelocity = cocos2d::Vec2(150.f,0.f);
+    int boardSize = 0;
+    const int boardMaxSize = 12;
+};
+
+

@@ -7,8 +7,8 @@ Scene* GameScene::createScene()
 {
 	auto scene = Scene::createWithPhysics();  // Создаем сцену с физическим миром
 	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);  // Опционально: установим режим отладки для отображения границ физических тел
-	auto layer = GameScene::create();  // Создаем ваш слой с игровым контентом
-	scene->addChild(layer);  // Добавляем слой к сцене
+	auto layer = GameScene::create();  // Создаем слой с игровым контентом
+	scene->addChild(layer);
 
 	return scene;
 }
@@ -39,8 +39,8 @@ bool GameScene::init()
 	this->addChild(backgroundField, -1);
 
 	//GameSceneManager::createBall(this);
-	GameSceneManager::createBoard(this);
-	//GameSceneManager::createBlocks(this);
+	//board.initialize(this, 5, EBoardType::STICKY);
+	Start.createLevel(this, ELevel::DEFAULT);
 
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = CC_CALLBACK_1(GameScene::keyPressed, this);
@@ -51,23 +51,20 @@ bool GameScene::init()
 
 	return true;
 }
-void GameScene::update(float delta) 
+void GameScene::update(float delta)
 {
-	GameSceneManager::setMoveValue(move);
-}
 
+}
 
 void GameScene::keyPressed(EventKeyboard::KeyCode keyCode) 
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
-		isKeyPressed = true;
-		move = -100;
+		Start.moveBoard(EMoveDirection::MOVE_LEFT);
 	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
-		isKeyPressed = true;
-		move = 100;
+		Start.moveBoard(EMoveDirection::MOVE_RIGTH);
 	}
 }
 
@@ -75,6 +72,6 @@ void GameScene::keyReleased(EventKeyboard::KeyCode keyCode)
 {
 	if (keyCode != EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode != EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
-		isKeyPressed = false;
-	} 
+		Start.moveBoard(EMoveDirection::STOP);
+	}
 }

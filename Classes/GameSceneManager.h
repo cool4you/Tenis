@@ -1,25 +1,32 @@
-#ifndef __GAMESCENEMANAGER_H__
-#define __GAMESCENEMANAGER_H__
+#pragma once
 
 #include "cocos2d.h"
 #include "Ball.h"
 #include "Board.h"
 #include "Blocks.h"
 #include <CCEventListenerKeyboard.h>
+#include <vector>
+
+enum class ELevel
+{
+	DEFAULT,
+	NEXT_LEVEL
+};
+
+enum class EMoveDirection
+{
+	STOP,
+	MOVE_LEFT,
+	MOVE_RIGTH
+};
 
 class GameSceneManager
 {
 public:
-    static void createBall(cocos2d::Scene* scene);
-    static void createBoard(cocos2d::Scene* scene);
-    static void createBlocks(cocos2d::Scene* scene);
-
-    static void setMoveValue(const int value);
+	void createLevel(cocos2d::Scene* scene, ELevel level);
+	void moveBoard(EMoveDirection moveDirection);
 
 private:
 
-    static int moveValue;
-    
+	Board board;
 };
-
-#endif // __GAMESCENEMANAGER_H__
