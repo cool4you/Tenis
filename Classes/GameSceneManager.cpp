@@ -19,6 +19,7 @@ void GameSceneManager::moveBoard(EMoveDirection moveDirection)
         break;
     case EMoveDirection::MOVE_RIGHT:
         board.setBoardVelocity(1);
+
         break;
     case EMoveDirection::STOP:
         board.setBoardVelocity(0);

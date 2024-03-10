@@ -80,6 +80,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact& contact)
 	PhysicsBody* a = contact.getShapeA()->getBody();
 	PhysicsBody* b = contact.getShapeB()->getBody();
 
+
 	if ((0x000001 == a->getCollisionBitmask() && 0x000002 == b->getCollisionBitmask()) || (0x000001 == b->getCollisionBitmask() && 0x000002 == a->getCollisionBitmask()))
 	{
 		Start.moveBoard(EMoveDirection::STOP);
