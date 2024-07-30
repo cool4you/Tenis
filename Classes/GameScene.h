@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "Board.h"
 #include "GameSceneManager.h"
 #include <CCEventListenerKeyboard.h>
 
@@ -15,7 +14,7 @@ public:
 	void keyPressed(cocos2d::EventKeyboard::KeyCode keyCode);
 	void keyReleased(cocos2d::EventKeyboard::KeyCode keyCode);
 
-	bool onContactBegin(cocos2d::PhysicsContact& contact);
+	void update(float delta) override;
 
 	CREATE_FUNC(GameScene);
 	

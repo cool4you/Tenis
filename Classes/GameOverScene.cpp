@@ -17,7 +17,7 @@ bool GameOverScene::init()
 	cocos2d::Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	cocos2d::Sprite* backgroundSprite = Sprite::create("test2.jpg");
+	cocos2d::Sprite* backgroundSprite = Sprite::create("background.jpg");
 	backgroundSprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	backgroundSprite->setScaleX(visibleSize.width / backgroundSprite->getContentSize().width);
 	backgroundSprite->setScaleY(visibleSize.height / backgroundSprite->getContentSize().height);

@@ -12,23 +12,24 @@ enum class EBallUpgrade
     PURPLE
 };
 
-enum class EBallType
-{
-    DEFAULT,
-    DAMAGED
-};
-
 class Ball
 {
 public:
     Ball();
     ~Ball();
 
-   // void initialize(cocos2d::Scene* scene, EBoardType ballType);
+   void initialize(cocos2d::Scene* scene, EBallUpgrade ballGrade);
+   void setVelocity(int speed);
+   int getDamage();
 
 private:
+    void setDamage(int damage);
+    void setTextureBall(EBallUpgrade ballGrade);
+    void createPhysicBody();
+
+    float speed = 150.f;
+    int damage = 0;
     cocos2d::Sprite* ballSprite = nullptr;
     cocos2d::PhysicsBody* ballPhysicsBody = nullptr;
-    cocos2d::Vec2 ballDefaultVelocity = cocos2d::Vec2(150.f, 0.f);
-    int damage;
+    cocos2d::Vec2 ballDefaultVelocity = cocos2d::Vec2(0.f,150.f);
 };

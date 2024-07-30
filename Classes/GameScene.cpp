@@ -1,5 +1,6 @@
 ﻿#include "GameScene.h"
 #include "GameSceneManager.h"
+#include "Definition.h"
 
 USING_NS_CC;
 
@@ -7,6 +8,7 @@ Scene* GameScene::createScene()
 {
 	auto scene = Scene::createWithPhysics();  // Создаем сцену с физическим миром
 	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);  // Опционально: установим режим отладки для отображения границ физических тел
+	scene->getPhysicsWorld()->setGravity(Vec2(0.f, 0.f));
 	auto layer = GameScene::create();  // Создаем слой с игровым контентом
 	scene->addChild(layer);
 
@@ -29,16 +31,6 @@ bool GameScene::init()
 	background->setScaleY(visibleSize.height / background->getContentSize().height);
 	this->addChild(background, -1);
 
-	auto backgroundField = Sprite::create("backgroundField.jpg");
-	backgroundField->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 - 50));
-	backgroundField->setContentSize(Size(1200, 800));
-	auto physicsBody = PhysicsBody::createEdgeBox(Size(1200, 800), PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setDynamic(false);
-	physicsBody->setCollisionBitmask(0x000001);
-	physicsBody->setContactTestBitmask(true);
-	backgroundField->addComponent(physicsBody);
-	this->addChild(backgroundField, -1);
-
 	Start.createLevel(this, ELevel::DEFAULT);
 
 	auto listener = EventListenerKeyboard::create();
@@ -46,11 +38,9 @@ bool GameScene::init()
 	listener->onKeyReleased = CC_CALLBACK_1(GameScene::keyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	auto contactListener = EventListenerPhysicsContact::create();
-	contactListener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
-
 	scheduleUpdate();
+
+
 
 	return true;
 }
@@ -65,6 +55,14 @@ void GameScene::keyPressed(EventKeyboard::KeyCode keyCode)
 	{
 		Start.moveBoard(EMoveDirection::MOVE_RIGHT);
 	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
+	{
+		Start.moveBall(EMoveDirection::START);
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_SHIFT)
+	{
+		Start.moveBoard(EMoveDirection::START);
+	}
 }
 
 void GameScene::keyReleased(EventKeyboard::KeyCode keyCode) 
@@ -75,15 +73,10 @@ void GameScene::keyReleased(EventKeyboard::KeyCode keyCode)
 	}
 }
 
-bool GameScene::onContactBegin(cocos2d::PhysicsContact& contact)
+void GameScene::update(float delta)
 {
-	PhysicsBody* a = contact.getShapeA()->getBody();
-	PhysicsBody* b = contact.getShapeB()->getBody();
+	Scene::update(delta);
 
+	//CCLOG("Position %p : %f", Start.board.getBoardNode(),Start.board.getBoardNode()->getPositionX());
 
-	if ((0x000001 == a->getCollisionBitmask() && 0x000002 == b->getCollisionBitmask()) || (0x000001 == b->getCollisionBitmask() && 0x000002 == a->getCollisionBitmask()))
-	{
-		Start.moveBoard(EMoveDirection::STOP);
-	}
-	return true;
 }

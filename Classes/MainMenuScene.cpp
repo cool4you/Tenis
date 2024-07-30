@@ -29,38 +29,37 @@ bool MainMenuScene::init()
     background->setScaleY(visibleSize.height / background->getContentSize().height);
     this->addChild(background, -1); // -1, чтобы фон был отрисован перед всеми другими элементами
 
-    auto gameTitle = Label::createWithTTF("Simple Tenis", "fonts/Marker Felt.ttf", 48); 
+    auto gameTitle = Label::createWithTTF("Simple Tenis", "fonts/Marker Felt.ttf", 24);
     gameTitle->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height - gameTitle->getContentSize().height));
     gameTitle->setPositionY(gameTitle->getPositionY() - 50);
     this->addChild(gameTitle);
 
     // 1. Кнопка "Старт игры"
-    auto startGameButton = MenuItemLabel::create(Label::createWithTTF("Start Game", "fonts/Marker Felt.ttf", 24),
+    auto startGameButton = MenuItemLabel::create(Label::createWithTTF("Start Game", "fonts/Marker Felt.ttf", 14),
         [](Ref* sender) {
-            Director::getInstance()->replaceScene(TransitionFade::create(1.0, GameScene::createScene()));
+            Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, GameScene::createScene()));
         });
 
     // 2. Кнопка "Лидерборд"
-    auto leaderboardButton = MenuItemLabel::create(Label::createWithTTF("Leaderboard", "fonts/Marker Felt.ttf", 24),
+    auto leaderboardButton = MenuItemLabel::create(Label::createWithTTF("Leaderboard", "fonts/Marker Felt.ttf", 14),
         [](Ref* sender) {
-            Director::getInstance()->replaceScene(TransitionFade::create(1.0, LeaderboardScene::createScene()));
+            Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, LeaderboardScene::createScene()));
         });
 
     // 3. Кнопка "Туториал"
-    auto infoButton = MenuItemLabel::create(Label::createWithTTF("Tutorial", "fonts/Marker Felt.ttf", 24),
+    auto infoButton = MenuItemLabel::create(Label::createWithTTF("Tutorial", "fonts/Marker Felt.ttf", 14),
         [](Ref* sender) {
-            Director::getInstance()->replaceScene(TransitionFade::create(1.0, InfoScene::createScene()));
+            Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, InfoScene::createScene()));
         });
 
     // 4. Кнопка "Выход из игры"
-
-    auto exitButton = MenuItemLabel::create(Label::createWithTTF("Quit game", "fonts/Marker Felt.ttf", 24),
+    auto exitButton = MenuItemLabel::create(Label::createWithTTF("Quit game", "fonts/Marker Felt.ttf", 14),
         [](Ref* sender) {
             Director::getInstance()->end();
         });
     // Размещение кнопок на экране
     Menu* menu = Menu::create(startGameButton, leaderboardButton, infoButton, exitButton, nullptr);
-    menu->alignItemsVerticallyWithPadding(20);
+    menu->alignItemsVerticallyWithPadding(16);
     this->addChild(menu);
 
     return true;
