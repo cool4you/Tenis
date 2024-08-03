@@ -2,7 +2,6 @@
 
 #include "cocos2d.h"
 #include "GameSceneManager.h"
-#include <CCEventListenerKeyboard.h>
 
 class GameScene : public cocos2d::Scene
 {
@@ -13,7 +12,6 @@ public:
 
 	void keyPressed(cocos2d::EventKeyboard::KeyCode keyCode);
 	void keyReleased(cocos2d::EventKeyboard::KeyCode keyCode);
-
 	void update(float delta) override;
 
 	CREATE_FUNC(GameScene);
@@ -22,6 +20,5 @@ private:
 	void SetPhysicsWorld(cocos2d::PhysicsWorld* world) { sceneWorld = world; };
 	cocos2d::PhysicsWorld* sceneWorld;
 	bool isKeyPressed = false;
-	int move = 0;
 	GameSceneManager Start;
 };

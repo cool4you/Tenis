@@ -1,4 +1,5 @@
 ﻿#include "Ball.h"
+#include "Definition.h"
 
 USING_NS_CC;
 
@@ -12,16 +13,14 @@ Ball::~Ball()
 
 void Ball::initialize(cocos2d::Scene* scene, EBallUpgrade ballGrade)
 {
-	ballSprite = Sprite::create("defaultBall.png");
-	ballSprite->setPosition(Vec2(150.f, 50.f));
+	gameScene = scene;
+	createBall();
 	setTextureBall(ballGrade);
-	createPhysicBody();
-	scene->addChild(ballSprite);
+	
 }
 
 void Ball::setTextureBall(EBallUpgrade ballGrade)
 {
-	std::string textureName = "";
 	switch (ballGrade)
 	{
 	case EBallUpgrade::DEFAULT:
@@ -53,6 +52,20 @@ void Ball::setTextureBall(EBallUpgrade ballGrade)
 	}
 }
 
+void Ball::createBall()
+{
+	ballSprite = Sprite::create("defaultBall.png");
+	ballSprite->setAnchorPoint(Vec2(0.5f, 0.f));
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	ballDefaultPosition = Vec2(visibleSize.width / 2, ballSprite->getContentSize().height * 2);
+
+	ballSprite->setPosition(ballDefaultPosition);
+
+	createPhysicBody();
+
+	gameScene->addChild(ballSprite);
+}
+
 void Ball::createPhysicBody()
 {
 	if (ballPhysicsBody != nullptr)
@@ -63,9 +76,10 @@ void Ball::createPhysicBody()
 	float radius = ballSprite->getContentSize().width / 2.0f;
 	ballPhysicsBody = PhysicsBody::createCircle(radius, PhysicsMaterial(0.f,1.f,0.f));
 	ballPhysicsBody->setDynamic(true);
-	ballPhysicsBody->setCollisionBitmask(0x000003);
+	ballPhysicsBody->setCollisionBitmask(BALL_COLLISION_BITMASK);
 	ballPhysicsBody->setContactTestBitmask(true);
-	ballPhysicsBody->setVelocity(Vec2(0.f, 0.f));
+	ballPhysicsBody->setVelocity(Vec2::ZERO);
+	ballPhysicsBody->setVelocityLimit(speed);
 	ballSprite->setPhysicsBody(ballPhysicsBody);
 }
 
@@ -74,14 +88,38 @@ void Ball::setDamage(int newDamage)
 	damage = newDamage;
 }
 
-void Ball::setVelocity(int speed)
+void Ball::setVelocity(int multFactor,bool levelStarted)
 {
-	ballPhysicsBody->setVelocity(ballDefaultVelocity*speed);
+	if (!levelStarted)
+	{
+		ballPhysicsBody->setVelocityLimit(speed * multFactor);
+		ballPhysicsBody->setVelocity(ballDefaultMove * multFactor);
+	}
+	else
+	{
+		ballPhysicsBody->setVelocityLimit(speed * multFactor);
+		ballPhysicsBody->setVelocity(ballDefaultVelocity * multFactor);
+	}
+	
 }
 
-int Ball::getDamage()
+int Ball::getDamage() const
 {
 	return damage;
 }
 
+cocos2d::Sprite* Ball::getBallSprite() const
+{
+	return ballSprite;
+}
 
+void Ball::setBallPosition(Vec2 position)
+{
+	if (ballSprite != nullptr)
+	{
+		gameScene->removeChild(ballSprite);
+	}
+	createBall();
+	ballSprite->setPosition(position);
+	
+}

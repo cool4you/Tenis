@@ -4,10 +4,6 @@
 #include "Ball.h"
 #include "Board.h"
 #include "Blocks.h"
-#include <CCEventListenerKeyboard.h>
-#include <vector>
-#include <math.h>
-#include <map>
 
 enum class ELevel
 {
@@ -18,6 +14,7 @@ enum class ELevel
 enum class EMoveDirection
 {
 	STOP,
+	STOP2,
 	MOVE_LEFT,
 	MOVE_RIGHT,
 	START
@@ -41,8 +38,15 @@ public:
 
 private:
 	cocos2d::Size visibleSize;
+	void updateScore(int points);
+	void infoPanel(cocos2d::Scene* scene);
+	int score = 0;
+	cocos2d::Label* scoreLabel;
+	cocos2d::Node* lifeNode;
+	cocos2d::Sprite* lifeSprite;
+	bool levelStarted = false;
 
 	Board board;
 	Ball ball;
-
+	Block blocks;
 };

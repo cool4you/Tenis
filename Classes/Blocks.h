@@ -1,13 +1,34 @@
-#ifndef __BLOCKS_H__
-#define __BLOCKS_H__
+#pragma once
 
 #include "cocos2d.h"
 
-class Block : public cocos2d::Sprite
+enum class EBlocksType
 {
-public:
-    Block* createBlock(const std::string& filename);
-    bool initBlock(const std::string& filename);
+    DEFAULT,
+    RED,
+    YELLOW,
+    GREEN,
+    BLUE,
+    PURPLE
 };
 
-#endif // __BLOCKS_H__
+class Block
+{
+public:
+    Block();
+    ~Block();
+
+    bool initialize(cocos2d::Scene* scene, EBlocksType ballGrade);
+    void createBlockSprite();
+    cocos2d::Node* getBlockFieldNode() const;
+
+private:
+    void createPhysicBody();
+    void createBlocksField(int level);
+
+    int hp = 0;
+    int blocksMaxCount = 20;
+    cocos2d::Sprite* blockSprite = nullptr;
+    cocos2d::PhysicsBody* blockPhysicsBody = nullptr;
+    cocos2d::Node* blocksFieldNode = nullptr;
+};
