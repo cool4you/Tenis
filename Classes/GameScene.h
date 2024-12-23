@@ -1,24 +1,19 @@
 #pragma once
-
 #include "cocos2d.h"
-#include "GameSceneManager.h"
+#include "GameplayCore.h"
+#include "BaseScene.h"
 
-class GameScene : public cocos2d::Scene
+class GameScene : public BaseScene
 {
 public:
-	static cocos2d::Scene* createScene();
-
-	bool init() override;
-
-	void keyPressed(cocos2d::EventKeyboard::KeyCode keyCode);
-	void keyReleased(cocos2d::EventKeyboard::KeyCode keyCode);
-	void update(float delta) override;
-
 	CREATE_FUNC(GameScene);
-	
+	static cocos2d::Scene* createScene();
+	virtual bool init() override;
+	virtual void onExit() override;
 private:
-	void SetPhysicsWorld(cocos2d::PhysicsWorld* world) { sceneWorld = world; };
-	cocos2d::PhysicsWorld* sceneWorld;
-	bool isKeyPressed = false;
-	GameSceneManager Start;
+	void establishBackground();
+
+	cocos2d::Size visibleSize;
+	cocos2d::Vec2 origin;
+	GameplayCore START;
 };

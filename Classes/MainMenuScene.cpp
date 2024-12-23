@@ -1,68 +1,94 @@
 ﻿#include "MainMenuScene.h"
-#include "GameScene.h"
-#include "LeaderboardScene.h"
-#include "InfoScene.h"
-#include "Definition.h"
+#include "SceneManager.h"
+#include "ui/CocosGUI.h"
+#include "AudioManager.h"
 
 USING_NS_CC;
 
-Scene* MainMenuScene::createScene()
+namespace
 {
-    return MainMenuScene::create();
+	const std::string FONT = "fonts/Marker Felt.ttf";
+	const int FONT_SIZE = 16;
+	const int FONT_TITLE_SIZE = 24;
+	const int ALIGN_SIZE = 12;
 }
 
 bool MainMenuScene::init()
 {
-    if (!Scene::init())
-    {
-        return false;
-    }
+	if (!Scene::init())
+	{
+		return false;
+	}
 
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	establishBackground();
+	createMenuButtons();
+	AudioManager::playMusic("audio/menu_music.mp3", true, 0.5f);
 
-    // Загрузка фона
-    auto background = Sprite::create("background.jpg"); // укажите путь к вашей фоновой картине
-    background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-    // Установка масштаба (scale) фона
-    background->setScaleX(visibleSize.width / background->getContentSize().width);
-    background->setScaleY(visibleSize.height / background->getContentSize().height);
-    this->addChild(background, -1); // -1, чтобы фон был отрисован перед всеми другими элементами
-
-    auto gameTitle = Label::createWithTTF("Simple Tenis", "fonts/Marker Felt.ttf", 24);
-    gameTitle->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height - gameTitle->getContentSize().height));
-    gameTitle->setPositionY(gameTitle->getPositionY() - 50);
-    this->addChild(gameTitle);
-
-    // 1. Кнопка "Старт игры"
-    auto startGameButton = MenuItemLabel::create(Label::createWithTTF("Start Game", "fonts/Marker Felt.ttf", 14),
-        [](Ref* sender) {
-            Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, GameScene::createScene()));
-        });
-
-    // 2. Кнопка "Лидерборд"
-    auto leaderboardButton = MenuItemLabel::create(Label::createWithTTF("Leaderboard", "fonts/Marker Felt.ttf", 14),
-        [](Ref* sender) {
-            Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, LeaderboardScene::createScene()));
-        });
-
-    // 3. Кнопка "Туториал"
-    auto infoButton = MenuItemLabel::create(Label::createWithTTF("Tutorial", "fonts/Marker Felt.ttf", 14),
-        [](Ref* sender) {
-            Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, InfoScene::createScene()));
-        });
-
-    // 4. Кнопка "Выход из игры"
-    auto exitButton = MenuItemLabel::create(Label::createWithTTF("Quit game", "fonts/Marker Felt.ttf", 14),
-        [](Ref* sender) {
-            Director::getInstance()->end();
-        });
-    // Размещение кнопок на экране
-    Menu* menu = Menu::create(startGameButton, leaderboardButton, infoButton, exitButton, nullptr);
-    menu->alignItemsVerticallyWithPadding(16);
-    this->addChild(menu);
-
-    return true;
+	return true;
 }
 
+void MainMenuScene::establishBackground()
+{
+	const Size visibleSize = Director::getInstance()->getVisibleSize();
+	const Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	Sprite* background = Sprite::create("image/background.jpg");
+	background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	background->setScaleX(visibleSize.width / background->getContentSize().width);
+	background->setScaleY(visibleSize.height / background->getContentSize().height);
+	this->addChild(background, -1);
+
+	Label* gameTitle = Label::createWithTTF("Simple Tenis", FONT, FONT_TITLE_SIZE);
+	gameTitle->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height - gameTitle->getContentSize().height));
+	this->addChild(gameTitle);
+
+}
+
+void MainMenuScene::createMenuButtons()
+{
+	const std::unordered_map <ESceneType, std::string> buttonsMap =
+	{
+		{ESceneType::GameScene,"Start Game" },
+		{ESceneType::LeaderboardScene,"Leaderboard" },
+		{ESceneType::TutorialScene,"Tutorial" },
+		{ESceneType::None,"Quit game" }
+	};
+
+	Vector<MenuItem*> menuButtonItems = {};
+
+	auto subsribeToMenuButton = [](const ESceneType sceneType, const std::string& buttonTitle) -> MenuItemLabel*
+	{
+		MenuItemLabel* menuItem = MenuItemLabel::create(Label::createWithTTF(buttonTitle, FONT, FONT_SIZE),
+			[=](Ref* sender)
+			{
+				sceneType == ESceneType::None ? Director::getInstance()->end() : SceneManager::runScene(sceneType);
+			});
+
+		return menuItem;
+	};
+
+	for (const auto& buttonInfo : buttonsMap)
+	{
+		menuButtonItems.pushBack(subsribeToMenuButton(buttonInfo.first, buttonInfo.second));
+	}
+
+	Menu* menu = Menu::createWithArray(menuButtonItems);
+	menu->alignItemsVerticallyWithPadding(ALIGN_SIZE);
+	this->addChild(menu);
+
+	const Size visibleSize = Director::getInstance()->getVisibleSize();
+	const Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	cocos2d::ui::Button* button = cocos2d::ui::Button::create("image/sound_on.png", "image/sound_off.png");
+	button->setAnchorPoint(Vec2(0.f, 0.f));
+	button->setPosition(Vec2(origin.x + button->getContentSize().width / 2, origin.y + button->getContentSize().height / 2));
+	button->loadTextureNormal(AudioManager::getIsSound ? "image/sound_on.png" : "image/sound_off.png");
+
+	button->addClickEventListener([button](Ref* sender) {
+		bool isSoundEnabled = !AudioManager::getIsSound();
+		AudioManager::setIsSound(isSoundEnabled);
+		button->loadTextureNormal(isSoundEnabled ? "image/sound_on.png" : "image/sound_off.png");
+		});
+
+	this->addChild(button);
+}

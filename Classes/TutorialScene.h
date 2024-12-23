@@ -1,19 +1,15 @@
 #pragma once
-#include "cocos2d.h"
 #include "BaseScene.h"
-#include "SaveManager.h"
 
-class GameOverScene : public BaseScene
+class TutorialScene : public BaseScene
 {
 public:
-	CREATE_FUNC(GameOverScene);
+	CREATE_FUNC(TutorialScene);
 	virtual bool init() override;
 private:
 	void establishBackground();
 	void createButtonBackToMenu();
+
 	cocos2d::Size visibleSize;
 	cocos2d::Vec2 origin;
-
-	int level;
-	int score;
 };

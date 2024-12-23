@@ -1,134 +1,169 @@
 ﻿#include "Board.h"
-#include "Definition.h"
 
 USING_NS_CC;
 
 Board::Board()
 {
-
 }
 
 Board::~Board()
 {
-
 }
 
-void Board::initialize(cocos2d::Scene* scene, EBoardType boardType, int _boardSize)
+void Board::init(EBoardType boardType, int boardLength)
 {
-    gameScene = scene;
-    boardSize = _boardSize;
-    setTextureBoard(boardType);
-    DrawBoard();
+	this->boardType = boardType;
+	this->boardLength = boardLength;
+
+	createBoard();
 }
 
-int Board::getBoardSize() const
-{
-    return boardSize;
-}
+// //////////
+// Create function
+// //////////
 
-cocos2d::Vec2 Board::getBoardDefaultVelocity() const
+void Board::createBoardCell()
 {
-    return boardDefaultVelocity;
-}
+	std::unordered_map<EBoardType, std::string> boardTypeMap
+	{
+		{EBoardType::DEFAULT, "image/boardStock.png"},
+		{EBoardType::STICKYBOARD, "image/boardSticky.png"}
+	};
 
-cocos2d::Sprite* Board::getBoardSprite() const
-{
-    return boardSprite;
-}
+	std::unordered_map<EBoardType, PhysicsMaterial> boardMaterialMap
+	{
+		{EBoardType::DEFAULT, PhysicsMaterial(0.f, 1.f, 0.f)},
+		{EBoardType::STICKYBOARD, PhysicsMaterial(0.f, 0.f, 0.f)}
+	};
 
-cocos2d::Node* Board::getBoardNode() const
-{
-    return boardNode;
-}
+	for (const auto& boardName : boardTypeMap)
+	{
+		if (boardType == boardName.first)
+		{
+			textureName = boardName.second;
+		}
+	}
 
-void Board::resizeBoard(int size)
-{
-    if (size != 0 && size <= boardMaxSize)
-    {
-        boardSize = size;
-    }
-    cocos2d::Vec2 tempPosition = boardNode->getPosition();
-    DrawBoard();
-    setBoardPosition(tempPosition);
-}
+	for (const auto& boardMaterial : boardMaterialMap)
+	{
+		if (boardType == boardMaterial.first)
+		{
+			textureMaterial = boardMaterial.second;
+		}
+	}
 
-void Board::setBoardVelocity(int value)
-{
-    if (boardNode->getPhysicsBody())
-    {
-        boardPhysicsBody->setVelocity(boardDefaultVelocity * value);
-    }
-}
-
-void Board::setBoardPosition(Vec2 position)
-{
-    boardNode->setPosition(position);
-}
-
-void Board::setTextureBoard(EBoardType boardType)
-{
-    if (boardType == EBoardType::STOCK)
-    {
-        textureName = "boardStock.png";
-        texureMaterial = PhysicsMaterial(0.f, 1.f, 0.f);
-    }
-    else if (boardType == EBoardType::STICKY)
-    {
-        textureName = "boardSticky.png";
-        texureMaterial = PhysicsMaterial(0.f, 0.f, 0.f);
-    }
+	for (int i = 0; i < boardLength; ++i)
+	{
+		boardSprite = Sprite::create(textureName);
+		boardSprite->setPosition(Vec2(boardSprite->getContentSize().width * i, 0.f));
+		boardSprite->setAnchorPoint(Vec2(0.f, 0.f));
+		boardNode->addChild(boardSprite);
+	}
 }
 
 void Board::createBoard()
 {
-    if (boardNode != nullptr)
-    {
-        boardNode->removeAllChildrenWithCleanup(true);
-    }
+	if (!boardNode)
+	{
+		boardNode = Node::create();
 
-    boardNode = Node::create();
+		createBoardCell();
 
-    createBoardCell();
+		boardNode->setContentSize(cocos2d::Size(boardSprite->getContentSize().width * boardLength, boardSprite->getContentSize().height));
+		boardNode->setAnchorPoint(Vec2(0.5f, 0.5f));
 
-    boardNode->setContentSize(cocos2d::Size(boardSprite->getContentSize().width * boardSize, boardSprite->getContentSize().height));
-    boardNode->setAnchorPoint(Vec2(0.5f, 0.f));
-    boardNode->setPosition(defaultPosition);
-
-    createBoardPhysicBody();
-}
-
-void Board::createBoardCell()
-{
-    for (int i = 0; i < boardSize; ++i)
-    {
-        boardSprite = Sprite::create(textureName);
-        boardSprite->setPosition(Vec2(boardSprite->getContentSize().width * i, 0.f));
-        boardSprite->setAnchorPoint(Vec2(0.f, 0.f));
-        boardNode->addChild(boardSprite);
-    }
-
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    defaultPosition = Vec2(visibleSize.width / 2, boardSprite->getContentSize().height);
+		createBoardPhysicBody();
+	}
 }
 
 void Board::createBoardPhysicBody()
 {
-    if (boardPhysicsBody != nullptr)
-    {
-        boardPhysicsBody->removeFromWorld();
-    }
+	if (boardPhysicsBody)
+	{
+		boardPhysicsBody->removeFromWorld();
+	}
 
-    boardPhysicsBody = PhysicsBody::createBox(boardNode->getContentSize(), PhysicsMaterial(texureMaterial));
-    boardPhysicsBody->setDynamic(false);
-    boardPhysicsBody->setCollisionBitmask(BOARD_COLLISION_BITMASK);
-    boardPhysicsBody->setContactTestBitmask(true);
-    boardPhysicsBody->setVelocityLimit(600);
-    boardPhysicsBody->setVelocity(Vec2(0.f, 0.f));
-    boardNode->setPhysicsBody(boardPhysicsBody);
+	boardPhysicsBody = PhysicsBody::createBox(boardNode->getContentSize(), PhysicsMaterial(textureMaterial));
+	boardPhysicsBody->setDynamic(false);
+	boardPhysicsBody->setCollisionBitmask(0x000003);
+	boardPhysicsBody->setContactTestBitmask(true);
+	boardPhysicsBody->setVelocity(Vec2::ZERO);
+	boardPhysicsBody->setVelocityLimit(speed_limit);
+
+	boardNode->setPhysicsBody(boardPhysicsBody);
 }
 
-void Board::DrawBoard()
+// //////////
+// Setters function 
+// //////////
+
+void Board::setBoardPosition(cocos2d::Vec2 position)
 {
-    createBoard();
-    gameScene->addChild(boardNode);
+	boardNode->setPosition(position);
+}
+
+void Board::setBoardVelocity(cocos2d::Vec2 boardVelocity)
+{
+	if (boardNode->getPhysicsBody())
+	{
+		boardPhysicsBody->setVelocity(Vec2(boardVelocity.x, boardVelocity.y * 0));
+	}
+}
+
+void Board::setBoardType(EBoardType boardType)
+{
+	this->boardType = boardType;
+
+	boardNode->removeAllChildren();
+	createBoardCell();
+	boardPhysicsBody->getShape(0)->setMaterial(textureMaterial);
+}
+
+void Board::changeBoardSize(int modSize)
+{
+	if (boardLength + modSize >= 1 && boardLength + modSize < boardLengthMax)
+	{
+		boardNode->removeAllChildren();
+
+		boardLength += modSize;
+		createBoardCell();
+		boardNode->setContentSize(cocos2d::Size(boardSprite->getContentSize().width * boardLength, boardSprite->getContentSize().height));
+		//createBoardPhysicBody();
+		Director::getInstance()->getScheduler()->schedule([=](float dt)
+			{
+				createBoardPhysicBody();
+			}, this, 0.f, 0, 0.f, false, "changePBodyKey");
+	}
+}
+
+void Board::changeBoardType()
+{
+	
+	if (this->boardType == EBoardType::DEFAULT)
+	{
+		this->boardType = EBoardType::STICKYBOARD;
+	}
+	else
+	{
+		this->boardType = EBoardType::DEFAULT;
+	}
+	setBoardType(boardType);
+}
+// //////////
+//  Getters function
+// //////////
+
+Node* Board::getBoardNode() const
+{
+	return boardNode;
+}
+
+Vec2 Board::getBoardPosition() const
+{
+	return boardNode->getPosition();
+}
+
+EBoardType Board::getBoardType() const
+{
+	return boardType;
 }

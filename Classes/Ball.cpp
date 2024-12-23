@@ -1,5 +1,4 @@
 ﻿#include "Ball.h"
-#include "Definition.h"
 
 USING_NS_CC;
 
@@ -11,115 +10,155 @@ Ball::~Ball()
 {
 }
 
-void Ball::initialize(cocos2d::Scene* scene, EBallUpgrade ballGrade)
+void Ball::init(EBallType ballType)
 {
-	gameScene = scene;
+	this->ballType = ballType;
+
 	createBall();
-	setTextureBall(ballGrade);
-	
 }
 
-void Ball::setTextureBall(EBallUpgrade ballGrade)
-{
-	switch (ballGrade)
-	{
-	case EBallUpgrade::DEFAULT:
-		ballSprite->setColor(Color3B::WHITE);
-		setDamage(1);
-		break;
-	case EBallUpgrade::RED:
-		ballSprite->setColor(Color3B::RED);
-		setDamage(2);
-		break;
-	case EBallUpgrade::YELLOW:
-		ballSprite->setColor(Color3B::YELLOW);
-		setDamage(4);
-		break;
-	case EBallUpgrade::GREEN:
-		ballSprite->setColor(Color3B::GREEN);
-		setDamage(6);
-		break;
-	case EBallUpgrade::BLUE:
-		ballSprite->setColor(Color3B::BLUE);
-		setDamage(8);
-		break;
-	case EBallUpgrade::PURPLE:
-		ballSprite->setColor(Color3B::MAGENTA);
-		setDamage(10);
-		break;
-	default:
-		break;
-	}
-}
+// //////////
+// Create function
+// //////////
 
 void Ball::createBall()
 {
-	ballSprite = Sprite::create("defaultBall.png");
-	ballSprite->setAnchorPoint(Vec2(0.5f, 0.f));
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	ballDefaultPosition = Vec2(visibleSize.width / 2, ballSprite->getContentSize().height * 2);
-
-	ballSprite->setPosition(ballDefaultPosition);
-
-	createPhysicBody();
-
-	gameScene->addChild(ballSprite);
+	if (!ballSprite)
+	{
+		ballSprite = Sprite::create("image/defaultBall.png");
+		createBallPhysicsBoydy();
+		setBallType(ballType);
+	}
 }
 
-void Ball::createPhysicBody()
+void Ball::createBallPhysicsBoydy()
 {
-	if (ballPhysicsBody != nullptr)
+	if (ballPhysicsBody)
 	{
 		ballPhysicsBody->removeFromWorld();
 	}
 
 	float radius = ballSprite->getContentSize().width / 2.0f;
-	ballPhysicsBody = PhysicsBody::createCircle(radius, PhysicsMaterial(0.f,1.f,0.f));
+	ballPhysicsBody = PhysicsBody::createCircle(radius, PhysicsMaterial(0.f, 1.f, 0.f));
 	ballPhysicsBody->setDynamic(true);
-	ballPhysicsBody->setCollisionBitmask(BALL_COLLISION_BITMASK);
+	ballPhysicsBody->setGravityEnable(false);
+	ballPhysicsBody->setCollisionBitmask(0x000002);
 	ballPhysicsBody->setContactTestBitmask(true);
-	ballPhysicsBody->setVelocity(Vec2::ZERO);
-	ballPhysicsBody->setVelocityLimit(speed);
+	ballPhysicsBody->setVelocityLimit(speed_limit);
+	ballPhysicsBody->setAngularVelocity(speed_limit);
+
 	ballSprite->setPhysicsBody(ballPhysicsBody);
 }
 
-void Ball::setDamage(int newDamage)
+// //////////
+// Setters function 
+// //////////
+
+void Ball::setBallPosition(Vec2 position)
 {
-	damage = newDamage;
+	if (ballSprite)
+	{
+		ballSprite->setPosition(position);
+	}
 }
 
-void Ball::setVelocity(int multFactor,bool levelStarted)
+void Ball::setBallVelocity(cocos2d::Vec2 ballVelocity)
 {
-	if (!levelStarted)
+	if (ballPhysicsBody)
 	{
-		ballPhysicsBody->setVelocityLimit(speed * multFactor);
-		ballPhysicsBody->setVelocity(ballDefaultMove * multFactor);
-	}
-	else
-	{
-		ballPhysicsBody->setVelocityLimit(speed * multFactor);
-		ballPhysicsBody->setVelocity(ballDefaultVelocity * multFactor);
-	}
+
+		ballPhysicsBody->setVelocity(ballVelocity);
 	
+	}
 }
 
-int Ball::getDamage() const
+void Ball::setBallDamage()
 {
-	return damage;
+	const std::unordered_map <EBallType, int> ballDamageMap =
+	{
+		{EBallType::DEFAULT, 1},
+		{EBallType::GREEN, 2},
+		{EBallType::PURPLE, 4}
+	};
+
+	for (const auto& damageInfo : ballDamageMap)
+	{
+		if (damageInfo.first == ballType)
+		{
+			damage = damageInfo.second;
+		}
+	}
 }
 
-cocos2d::Sprite* Ball::getBallSprite() const
+void Ball::setBallTexture()
+{
+	const std::unordered_map <EBallType, Color3B> ballTextureMap =
+	{
+		{EBallType::DEFAULT, Color3B::WHITE},
+		{EBallType::GREEN, Color3B::GREEN},
+		{EBallType::PURPLE, Color3B::MAGENTA}
+	};
+
+	for (const auto& ballTextureInfo : ballTextureMap)
+	{
+		if (ballTextureInfo.first == ballType)
+		{
+			ballSprite->setColor(ballTextureInfo.second);
+		}
+	}
+}
+
+void Ball::setBallType(EBallType ballType)
+{
+	this->ballType = ballType;
+	setBallDamage();
+	setBallTexture();
+}
+
+void Ball::changeBallType(int changeGrade)
+{
+	std::vector<EBallType> ballTypes = { EBallType::DEFAULT,EBallType::GREEN,EBallType::PURPLE };
+	int it = 0;
+	for (EBallType ballType : ballTypes)
+	{
+		if (this->ballType == ballType)
+		{
+			if ((it + changeGrade) >= 0 && (it + changeGrade)< ballTypes.size())
+			{
+				this->ballType = ballTypes.at(it + changeGrade);
+				setBallType(this->ballType); 
+				break;
+			}
+		}
+		++it;
+	}
+}
+
+// //////////
+//  Getters function
+// //////////
+
+Sprite* Ball::getballSprite() const
 {
 	return ballSprite;
 }
 
-void Ball::setBallPosition(Vec2 position)
+Size Ball::getBallContentSize() const
 {
-	if (ballSprite != nullptr)
-	{
-		gameScene->removeChild(ballSprite);
-	}
-	createBall();
-	ballSprite->setPosition(position);
-	
+	return ballSprite->getContentSize();
+}
+
+Vec2 Ball::getBallPosition() const
+{
+	return ballSprite->getPosition();
+}
+
+int Ball::getBallDamage() const
+{
+	return damage;
+}
+
+EBallType Ball::getBallType() const
+{
+	return ballType;
 }

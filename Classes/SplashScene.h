@@ -1,20 +1,16 @@
-#ifndef __SPLASH_SCENE_H__
-#define __SPLASH_SCENE_H__
-
+#pragma once
 #include "cocos2d.h"
+#include "BaseScene.h"
 
-class SplashScene : public cocos2d::Scene
+class SplashScene : public BaseScene
 {
 public:
-	static cocos2d::Scene* createScene();
-
-	bool init() override;
-
-	// implement the "static create()" method manually
 	CREATE_FUNC(SplashScene);
+	virtual bool init() override;
 
 private:
-	void GoToMainMenu(float dt);
+	void establishBackground();
+	const float delaySwapScene = 2.0f;
 };
 
-#endif // __SPLASH_SCENE_H__
+

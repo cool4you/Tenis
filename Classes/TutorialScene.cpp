@@ -1,4 +1,4 @@
-#include "GameOverScene.h"
+#include "TutorialScene.h"
 #include "SceneManager.h"
 #include "ui/CocosGUI.h"
 
@@ -11,7 +11,7 @@ namespace
 	const int FONT_TITLE_SIZE = 24;
 }
 
-bool GameOverScene::init()
+bool TutorialScene::init()
 {
 	if (!Scene::init())
 	{
@@ -24,29 +24,23 @@ bool GameOverScene::init()
 	establishBackground();
 	createButtonBackToMenu();
 
-	auto results =  SaveManager::loadResultFromFile();
-	
-	cocos2d::Label* recordLabel = Label::createWithTTF("Level : " + std::to_string(results.back().first) + "   " + "Score : " + std::to_string(results.back().second), FONT, FONT_SIZE);
-	recordLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-	this->addChild(recordLabel);
-
 	return true;
 }
 
-void GameOverScene::establishBackground()
+void TutorialScene::establishBackground()
 {
-	Sprite* background = Sprite::create("image/background.jpg");
+	Sprite* background = Sprite::create("image/tutorial_background.png");
 	background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	background->setScaleX(visibleSize.width / background->getContentSize().width);
 	background->setScaleY(visibleSize.height / background->getContentSize().height);
 	this->addChild(background, -1);
 
-	Label* sceneTitle = Label::createWithTTF("Game Over", FONT, FONT_TITLE_SIZE);
+	Label* sceneTitle = Label::createWithTTF("Tutorial", FONT, FONT_TITLE_SIZE);
 	sceneTitle->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height - sceneTitle->getContentSize().height));
 	this->addChild(sceneTitle);
 }
 
-void GameOverScene::createButtonBackToMenu()
+void TutorialScene::createButtonBackToMenu()
 {
 	cocos2d::Label* backToMenuButton = Label::createWithTTF("Main Menu", FONT, FONT_SIZE);
 
@@ -54,7 +48,7 @@ void GameOverScene::createButtonBackToMenu()
 	button->setTitleLabel(backToMenuButton);
 	button->setAnchorPoint(Vec2(0.f, 0.f));
 	button->setPosition(Vec2(origin.x + backToMenuButton->getContentSize().height, origin.y + backToMenuButton->getContentSize().height));
-	button->addClickEventListener([](Ref* sender) {
+	button->addClickEventListener([=](Ref* sender) {
 		SceneManager::runScene(ESceneType::MainMenuScene);
 		});
 	this->addChild(button);

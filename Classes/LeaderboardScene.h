@@ -1,20 +1,19 @@
-#ifndef __LEADERBOARD_SCENE_H__
-#define __LEADERBOARD_SCENE_H__
-
+#pragma once
 #include "cocos2d.h"
+#include "BaseScene.h"
 
-class LeaderboardScene : public cocos2d::Scene
+class LeaderboardScene : public BaseScene
 {
 public:
-	static Scene* LeaderboardScene::createScene();
-	
-	bool init() override;
-
 	CREATE_FUNC(LeaderboardScene);
-
+	virtual bool init() override;
 private:
-	void backMainMenu(cocos2d::Ref* sender);
+	void establishBackground();
+	void createButtonBackToMenu();
 
+	cocos2d::Size visibleSize;
+	cocos2d::Vec2 origin;
+
+	int level;
+	int score;
 };
-
-#endif // __LEADERBORD_SCENE_H__

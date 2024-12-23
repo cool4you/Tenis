@@ -1,14 +1,12 @@
-#ifndef __MAIN_MENU_SCENE_H__
-#define __MAIN_MENU_SCENE_H__
+#pragma once 
+#include "BaseScene.h"
 
-#include "cocos2d.h"
-
-class MainMenuScene : public cocos2d::Scene
+class MainMenuScene : public BaseScene
 {
 public:
-    static cocos2d::Scene* createScene();
-    virtual bool init();
     CREATE_FUNC(MainMenuScene);
+    virtual bool init() override; 
+private:
+    void establishBackground();
+    void createMenuButtons();
 };
-
-#endif // __MAIN_MENU_SCENE_H__
