@@ -27,15 +27,16 @@ bool GameScene::init()
 	origin = Director::getInstance()->getVisibleOrigin();
 
 	establishBackground();
-	START.startGame(this);
-	AudioManager::playMusic("audio/game_music.mp3", true, 0.5f);
+	gameStart.startGame(this);
+
+	AudioManager::playMusic(ESoundType::GameMusic, true);
 
 	return true;
 }
 
 void GameScene::onExit()
 {
-	START.removeEventListeners();
+	gameStart.removeEventListeners();
 	Scene::onExit();
 }
 
@@ -50,13 +51,13 @@ void GameScene::establishBackground()
 	cocos2d::ui::Button* button = cocos2d::ui::Button::create("image/sound_on.png", "image/sound_off.png");
 	button->setAnchorPoint(Vec2(0.f, 0.f));
 	button->setPosition(Vec2(origin.x + button->getContentSize().width / 2, origin.y + button->getContentSize().height / 2));
-	button->loadTextureNormal(AudioManager::getIsSound ? "image/sound_on.png" : "image/sound_off.png");
+	button->loadTextureNormal(AudioManager::getIsMuted() ? "image/sound_off.png" : "image/sound_on.png");
 
 	button->addClickEventListener([button](Ref* sender)
 		{
-			bool isSoundEnabled = !AudioManager::getIsSound();
-			AudioManager::setIsSound(isSoundEnabled);
-			button->loadTextureNormal(isSoundEnabled ? "image/sound_on.png" : "image/sound_off.png");
+			bool isSoundEnabled = !AudioManager::getIsMuted();
+			AudioManager::setIsMuted(isSoundEnabled);
+			button->loadTextureNormal(isSoundEnabled ? "image/sound_off.png" : "image/sound_on.png");
 		});
 
 	this->addChild(button);

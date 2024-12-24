@@ -8,7 +8,7 @@ USING_NS_CC;
 using namespace rapidjson;
 
 
-void SaveManager::saveResultToFile(int level, int score)
+void SaveManager::saveResultToFile(const int level,const int score)
 {
     std::string gamePath = FileUtils::getInstance()->getDefaultResourceRootPath();
     std::string filePath = gamePath + "leaderboard.json";
@@ -44,7 +44,7 @@ void SaveManager::saveResultToFile(int level, int score)
 
 }
 
-std::vector<std::pair<int, int>> SaveManager::loadResultFromFile()
+std::vector<std::pair<const int,const int>> SaveManager::loadResultFromFile()
 {
     std::string gamePath = FileUtils::getInstance()->getDefaultResourceRootPath();
     std::string filePath = gamePath + "leaderboard.json";
@@ -52,7 +52,7 @@ std::vector<std::pair<int, int>> SaveManager::loadResultFromFile()
     std::string jsonString = FileUtils::getInstance()->getStringFromFile(filePath);
     Document jsonDoc;
 
-    std::vector<std::pair<int, int>> results;
+    std::vector<std::pair<const int,const int>> results;
 
     if (!jsonString.empty())
     {

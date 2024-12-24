@@ -84,7 +84,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     
-    srand(time(nullptr));
+    srand(time(time_t()));
 
     SceneManager::runScene(ESceneType::SplashScene);
 

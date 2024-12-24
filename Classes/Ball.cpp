@@ -10,7 +10,7 @@ Ball::~Ball()
 {
 }
 
-void Ball::init(EBallType ballType)
+void Ball::init(const EBallType ballType)
 {
 	this->ballType = ballType;
 
@@ -23,6 +23,7 @@ void Ball::init(EBallType ballType)
 
 void Ball::createBall()
 {
+	// Create ball sprite
 	if (!ballSprite)
 	{
 		ballSprite = Sprite::create("image/defaultBall.png");
@@ -33,6 +34,7 @@ void Ball::createBall()
 
 void Ball::createBallPhysicsBoydy()
 {
+	// Create ball physicsbody
 	if (ballPhysicsBody)
 	{
 		ballPhysicsBody->removeFromWorld();
@@ -54,26 +56,27 @@ void Ball::createBallPhysicsBoydy()
 // Setters function 
 // //////////
 
-void Ball::setBallPosition(Vec2 position)
+void Ball::setBallPosition(const Vec2 position)
 {
+	// Set ball position
 	if (ballSprite)
 	{
 		ballSprite->setPosition(position);
 	}
 }
 
-void Ball::setBallVelocity(cocos2d::Vec2 ballVelocity)
+void Ball::setBallVelocity(const Vec2 ballVelocity)
 {
+	// Set ball velocity
 	if (ballPhysicsBody)
 	{
-
 		ballPhysicsBody->setVelocity(ballVelocity);
-	
 	}
 }
 
 void Ball::setBallDamage()
 {
+	// Map of ball damage
 	const std::unordered_map <EBallType, int> ballDamageMap =
 	{
 		{EBallType::DEFAULT, 1},
@@ -81,6 +84,7 @@ void Ball::setBallDamage()
 		{EBallType::PURPLE, 4}
 	};
 
+	// Set ball damage
 	for (const auto& damageInfo : ballDamageMap)
 	{
 		if (damageInfo.first == ballType)
@@ -92,6 +96,7 @@ void Ball::setBallDamage()
 
 void Ball::setBallTexture()
 {
+	// Map of ball texture(color)
 	const std::unordered_map <EBallType, Color3B> ballTextureMap =
 	{
 		{EBallType::DEFAULT, Color3B::WHITE},
@@ -99,6 +104,7 @@ void Ball::setBallTexture()
 		{EBallType::PURPLE, Color3B::MAGENTA}
 	};
 
+	// Set ball texture
 	for (const auto& ballTextureInfo : ballTextureMap)
 	{
 		if (ballTextureInfo.first == ballType)
@@ -108,22 +114,24 @@ void Ball::setBallTexture()
 	}
 }
 
-void Ball::setBallType(EBallType ballType)
+void Ball::setBallType(const EBallType ballType)
 {
+	// Set ball type
 	this->ballType = ballType;
 	setBallDamage();
 	setBallTexture();
 }
 
-void Ball::changeBallType(int changeGrade)
+void Ball::changeBallType(const int changeGrade)
 {
+	// Change ball type
 	std::vector<EBallType> ballTypes = { EBallType::DEFAULT,EBallType::GREEN,EBallType::PURPLE };
 	int it = 0;
 	for (EBallType ballType : ballTypes)
 	{
 		if (this->ballType == ballType)
 		{
-			if ((it + changeGrade) >= 0 && (it + changeGrade)< ballTypes.size())
+			if ((it + changeGrade) >= 0 && (it + changeGrade) < int(ballTypes.size()))
 			{
 				this->ballType = ballTypes.at(it + changeGrade);
 				setBallType(this->ballType); 

@@ -14,11 +14,11 @@ public:
     Ball();
     ~Ball();
 
-    void init(EBallType ballType);
+    void init(const EBallType ballType);
 
-    void setBallPosition(cocos2d::Vec2 position);
-    void setBallVelocity(cocos2d::Vec2 ballVelocity);
-    void changeBallType(int changeGrade);
+    void setBallPosition(const cocos2d::Vec2 position);
+    void setBallVelocity(const cocos2d::Vec2 ballVelocity);
+    void changeBallType(const int changeGrade);
 
     cocos2d::Sprite* Ball::getballSprite() const;
     cocos2d::Size getBallContentSize() const;
@@ -28,7 +28,8 @@ public:
 private:
     void createBall();
     void createBallPhysicsBoydy();
-    void setBallType(EBallType ballType);
+    
+    void setBallType(const EBallType ballType);
     void setBallDamage();
     void setBallTexture();
 

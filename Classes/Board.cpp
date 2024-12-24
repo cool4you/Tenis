@@ -10,7 +10,7 @@ Board::~Board()
 {
 }
 
-void Board::init(EBoardType boardType, int boardLength)
+void Board::init(const EBoardType boardType, const int boardLength)
 {
 	this->boardType = boardType;
 	this->boardLength = boardLength;
@@ -24,19 +24,22 @@ void Board::init(EBoardType boardType, int boardLength)
 
 void Board::createBoardCell()
 {
-	std::unordered_map<EBoardType, std::string> boardTypeMap
+	// Map for board texture name
+	const std::unordered_map<EBoardType, std::string> boardTypeMap
 	{
 		{EBoardType::DEFAULT, "image/boardStock.png"},
 		{EBoardType::STICKYBOARD, "image/boardSticky.png"}
 	};
 
-	std::unordered_map<EBoardType, PhysicsMaterial> boardMaterialMap
+	// Map for board physic material
+	const std::unordered_map<EBoardType, PhysicsMaterial> boardMaterialMap
 	{
 		{EBoardType::DEFAULT, PhysicsMaterial(0.f, 1.f, 0.f)},
 		{EBoardType::STICKYBOARD, PhysicsMaterial(0.f, 0.f, 0.f)}
 	};
 
-	for (const auto& boardName : boardTypeMap)
+	// Set texture name and physic material
+	for (const std::pair<EBoardType,std::string>&boardName : boardTypeMap)
 	{
 		if (boardType == boardName.first)
 		{
@@ -97,12 +100,12 @@ void Board::createBoardPhysicBody()
 // Setters function 
 // //////////
 
-void Board::setBoardPosition(cocos2d::Vec2 position)
+void Board::setBoardPosition(const Vec2 position)
 {
 	boardNode->setPosition(position);
 }
 
-void Board::setBoardVelocity(cocos2d::Vec2 boardVelocity)
+void Board::setBoardVelocity(const Vec2 boardVelocity)
 {
 	if (boardNode->getPhysicsBody())
 	{
@@ -110,7 +113,7 @@ void Board::setBoardVelocity(cocos2d::Vec2 boardVelocity)
 	}
 }
 
-void Board::setBoardType(EBoardType boardType)
+void Board::setBoardType(const EBoardType boardType)
 {
 	this->boardType = boardType;
 
@@ -119,7 +122,7 @@ void Board::setBoardType(EBoardType boardType)
 	boardPhysicsBody->getShape(0)->setMaterial(textureMaterial);
 }
 
-void Board::changeBoardSize(int modSize)
+void Board::changeBoardSize(const int modSize)
 {
 	if (boardLength + modSize >= 1 && boardLength + modSize < boardLengthMax)
 	{
@@ -128,7 +131,7 @@ void Board::changeBoardSize(int modSize)
 		boardLength += modSize;
 		createBoardCell();
 		boardNode->setContentSize(cocos2d::Size(boardSprite->getContentSize().width * boardLength, boardSprite->getContentSize().height));
-		//createBoardPhysicBody();
+
 		Director::getInstance()->getScheduler()->schedule([=](float dt)
 			{
 				createBoardPhysicBody();
@@ -138,7 +141,6 @@ void Board::changeBoardSize(int modSize)
 
 void Board::changeBoardType()
 {
-	
 	if (this->boardType == EBoardType::DEFAULT)
 	{
 		this->boardType = EBoardType::STICKYBOARD;
@@ -149,6 +151,7 @@ void Board::changeBoardType()
 	}
 	setBoardType(boardType);
 }
+
 // //////////
 //  Getters function
 // //////////

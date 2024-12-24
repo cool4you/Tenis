@@ -13,13 +13,14 @@ public:
     Board();
     ~Board();
 
-    void init(EBoardType boardType, int boardLength);
+    void init(const EBoardType boardType,const int boardLength);
 
-    void setBoardVelocity(cocos2d::Vec2 boardVelocity);
-    void setBoardPosition(cocos2d::Vec2 position);
-    void setBoardType(EBoardType boardType);
-    void changeBoardSize(int modSize);
+    void setBoardVelocity(const cocos2d::Vec2 boardVelocity);
+    void setBoardPosition(const cocos2d::Vec2 position);
+    void setBoardType(const EBoardType boardType);
+    void changeBoardSize(const int modSize);
     void changeBoardType();
+
     cocos2d::Node* getBoardNode() const;
     cocos2d::Vec2 getBoardPosition() const;
     EBoardType getBoardType() const;
@@ -37,7 +38,7 @@ private:
     int boardLength = 0;
     int boardLengthMax = 10;
     const float speed_limit = 500.f;
-    EBoardType boardType;
+    EBoardType boardType = EBoardType::DEFAULT;
 };
 
 

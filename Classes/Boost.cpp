@@ -12,6 +12,7 @@ Boost::~Boost()
 
 namespace
 {
+	//	Map for boost type and image path
 	const std::unordered_map <EBoostType, std::string> boostMap =
 	{
 		{EBoostType::BALL_DOWNGRADE, "image/boost_ball_downgrade.png"},
@@ -24,12 +25,16 @@ namespace
 	};
 }
 
-void Boost::init(Vec2 position, EBoostType boostType)
+void Boost::init(const Vec2 position, const EBoostType boostType)
 {	
 	this->boostType = boostType;
 	createBoost();
 	setPosition(position);
 }
+
+// //////////
+// Create functions
+// //////////
 
 void Boost::createBoost()
 {
@@ -58,13 +63,21 @@ void Boost::boostClear()
 	boostType = EBoostType::None;
 }
 
-void Boost::setPosition(Vec2 position)
+// //////////
+// Setters functions
+// //////////
+
+void Boost::setPosition(const Vec2 position)
 {
 	if (boostSprite)
 	{
 		boostSprite->setPosition(position);
 	}
 }
+
+// //////////
+// Getters functions
+// //////////
 
 Sprite* Boost::getBoostSprite() const
 {

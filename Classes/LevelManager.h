@@ -8,20 +8,21 @@
 class LevelManager
 {
 public:
-	void createLevel(int level, cocos2d::Scene* scene);
-	void applyBoostEffect(EBoostType boostType, int& life, int maxLife, bool& isLifeFreez);
+	void createLevel(const int level, cocos2d::Scene* scene);
+	void applyBoostEffect(const EBoostType boostType,int& life,const int maxLife, bool& isLifeFreez);
 	void removeBlock(cocos2d::Node* block, bool& isLevelComplete);
 	void removeBoost(cocos2d::Node* boost);
+
 	Board getBoard() const;
 	Ball getBall() const;
 	Boost getBoost() const;
 	std::shared_ptr<Block> getBlock(cocos2d::Node* blockNode) const;
 
 private:
-	void spawnBlocks(int level);
+	void spawnBlocks(const int level);
 	void spawnBall();
 	void spawnBoard();
-	void spawnBoost(int level,cocos2d::Vec2 position);
+	void spawnBoost(const int level,const cocos2d::Vec2 position);
 
 	cocos2d::Size visibleSize;
 	cocos2d::Vec2 origin;
@@ -32,5 +33,5 @@ private:
 	Ball _ball;
 	Board _board;
 	Boost _boost;
-	int level;
+	int level = 0;
 };

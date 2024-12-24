@@ -1,6 +1,7 @@
 #include "GameOverScene.h"
 #include "SceneManager.h"
 #include "ui/CocosGUI.h"
+#include "SaveManager.h"
 
 USING_NS_CC;
 

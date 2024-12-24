@@ -14,12 +14,15 @@ public:
     Block();
     ~Block();
 
-    void init(EBlockType blockType);
-    void setBlockPosition(cocos2d::Vec2 position);
+    void init(const EBlockType blockType);
+
+    void setBlockPosition(const cocos2d::Vec2 position);
+
     cocos2d::Sprite* getBlockSprite() const;
     int getCurrentBlockHP() const;
     int getDefaultBlockHP() const;
-    void changeHP(int damage);
+    void changeHP(const int damage);
+
 private:
     void createBlock();
     void createBlockPhysicsBoydy();
@@ -27,6 +30,7 @@ private:
     void setBlockTexture();
     void setBlockType(EBlockType blockType);
     void changeTexture();
+   
     int currentHP;
     int defaultHP;
     EBlockType blockType;

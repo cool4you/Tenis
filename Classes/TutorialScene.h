@@ -6,6 +6,7 @@ class TutorialScene : public BaseScene
 public:
 	CREATE_FUNC(TutorialScene);
 	virtual bool init() override;
+
 private:
 	void establishBackground();
 	void createButtonBackToMenu();

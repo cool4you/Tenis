@@ -10,10 +10,11 @@ public:
 	static cocos2d::Scene* createScene();
 	virtual bool init() override;
 	virtual void onExit() override;
+
 private:
 	void establishBackground();
 
 	cocos2d::Size visibleSize;
 	cocos2d::Vec2 origin;
-	GameplayCore START;
+	GameplayCore gameStart;
 };

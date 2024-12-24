@@ -11,7 +11,7 @@ Block::~Block()
 
 }
 
-void Block::init(EBlockType blockType)
+void Block::init(const EBlockType blockType)
 {
 	this->blockType = blockType;
 
@@ -24,6 +24,7 @@ void Block::init(EBlockType blockType)
 
 void Block::createBlock()
 {
+	//	Create block sprite
 	if (blockSprite)
 	{
 		blockSprite = nullptr;
@@ -37,6 +38,7 @@ void Block::createBlock()
 
 void Block::createBlockPhysicsBoydy()
 {
+	//	Create block physicsbody
 	if (blockPhysicsBody)
 	{
 		blockPhysicsBody->removeFromWorld();
@@ -48,6 +50,7 @@ void Block::createBlockPhysicsBoydy()
 	blockPhysicsBody->setCollisionBitmask(0x000004);
 	blockPhysicsBody->setContactTestBitmask(true);
 	blockPhysicsBody->setPositionOffset(Vec2::ZERO);
+
 	blockSprite->setPhysicsBody(blockPhysicsBody);
 }
 
@@ -57,6 +60,7 @@ void Block::createBlockPhysicsBoydy()
 
 void Block::setBlockHP()
 {
+	// Map of block HP by type
 	const std::unordered_map <EBlockType, int> blcokHPMap =
 	{
 		{EBlockType::DEFAULT, 1},
@@ -64,6 +68,7 @@ void Block::setBlockHP()
 		{EBlockType::PURPLE, 4}
 	};
 
+	// Set block HP
 	for (const auto& hpInfo : blcokHPMap)
 	{
 		if (hpInfo.first == blockType)
@@ -76,6 +81,7 @@ void Block::setBlockHP()
 
 void Block::setBlockTexture()
 {
+	// Map of block texture(color) by type
 	const std::unordered_map <EBlockType, Color3B> blcokTextureMap =
 	{
 		{EBlockType::DEFAULT, Color3B::WHITE},
@@ -83,6 +89,7 @@ void Block::setBlockTexture()
 		{EBlockType::PURPLE, Color3B::MAGENTA}
 	};
 
+	// Set block texture(color)
 	for (const auto& blockTextureInfo : blcokTextureMap)
 	{
 		if (blockTextureInfo.first == blockType)
@@ -92,14 +99,15 @@ void Block::setBlockTexture()
 	}
 }
 
-void Block::setBlockType(EBlockType blockType)
+void Block::setBlockType(const EBlockType blockType)
 {
+	// Set block type and change block HP, texture
 	this->blockType = blockType;
 	setBlockHP();
 	setBlockTexture();
 }
 
-void Block::setBlockPosition(Vec2 position)
+void Block::setBlockPosition(const Vec2 position)
 {
 	blockSprite->setPosition(position);
 }

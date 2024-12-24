@@ -4,6 +4,6 @@
 class SaveManager
 {
 public:
-	static void saveResultToFile(int level, int score);
-	static std::vector<std::pair<int, int>> loadResultFromFile();
+	static void saveResultToFile(const int level,const int score);
+	static std::vector<std::pair<const int,const int>> loadResultFromFile();
 };

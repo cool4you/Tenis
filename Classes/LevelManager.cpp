@@ -12,9 +12,12 @@ namespace
 	int maxBoostPerLevel;
 }
 
-void LevelManager::createLevel(int level, Scene* scene)
+void LevelManager::createLevel(const int level, Scene* scene)
 {
-	this->scene = scene;
+	if (scene)
+	{
+		this->scene = scene;
+	}
 	this->level = level;
 	maxBoostPerLevel = 3;
 
@@ -73,7 +76,7 @@ void LevelManager::removeBlock(Node* block, bool& isLevelComplete)
 	Size fieldNodeContentSize = blocksFieldNode->getContentSize();
 	float offsetX = blocksFieldNode->getPosition().x - (fieldNodeContentSize.width * blocksFieldNode->getAnchorPoint().x);
 	float offsetY = blocksFieldNode->getPosition().y - (fieldNodeContentSize.height * blocksFieldNode->getAnchorPoint().y);
-	auto position = block->getPosition() + Vec2(offsetX, offsetY);
+	Vec2 position = block->getPosition() + Vec2(offsetX, offsetY);
 
 	blocksFieldNode->removeChild(block, true);
 	if (blocksFieldNode->getChildrenCount() == 0)
@@ -102,7 +105,7 @@ void LevelManager::removeBoost(Node* boost)
 // Spawn obj functions
 //////////
 
-void LevelManager::spawnBlocks(int level)
+void LevelManager::spawnBlocks(const int level)
 {
 	if (blocksFieldNode)
 	{
@@ -119,9 +122,9 @@ void LevelManager::spawnBlocks(int level)
 	const int PURPLE_BLOCK_INITIAL_LVL = 11;
 
 	// blocks count constants
-	const int MIN_BLOCKS = 10;
-	const int MAX_BLOCKS = 130;
-	const int BLOCKS_PER_LEVEL_COEF = 10;
+	const size_t MIN_BLOCKS = 10;
+	const size_t MAX_BLOCKS = 130;
+	const size_t BLOCKS_PER_LEVEL_COEF = 10;
 
 	// block-related chances
 	const float WHITE_BLOCK_CHANCE = std::clamp((1.f - (level - 1) * PER_LEVEL_COEF), 0.f, 1.f);
@@ -129,7 +132,7 @@ void LevelManager::spawnBlocks(int level)
 	const float GREEN_BLOCK_CHANCE = std::clamp((1.f - WHITE_BLOCK_CHANCE - PURPLE_BLOCK_CHANCE), 0.f, 1.f);
 
 	// calculate random block indexes
-	const int BLOCKS_COUNT = std::clamp(level * BLOCKS_PER_LEVEL_COEF, MIN_BLOCKS, MAX_BLOCKS);
+	const size_t BLOCKS_COUNT = std::clamp(level * BLOCKS_PER_LEVEL_COEF, MIN_BLOCKS, MAX_BLOCKS);
 	std::set<size_t> indexes = {};
 
 	while (indexes.size() < BLOCKS_COUNT)
@@ -140,7 +143,7 @@ void LevelManager::spawnBlocks(int level)
 	for (const size_t index : indexes)
 	{
 		// calculate random type of block
-		const float RAND_PERCENT = (rand() % 100) * 0.01;
+		const float RAND_PERCENT = (rand() % 100) * 0.01f;
 		EBlockType block_type = EBlockType::DEFAULT;
 
 		if (RAND_PERCENT < PURPLE_BLOCK_CHANCE)
@@ -178,6 +181,14 @@ void LevelManager::spawnBall()
 		scene->addChild(_ball.getballSprite());
 	}
 	_ball.setBallPosition(Vec2(visibleSize.width / 2, _ball.getBallContentSize().height * 3 + 1));
+	
+	if (_board.getBoardNode())
+	{
+		if (_board.getBoardNode()->getPhysicsBody())
+		{
+			_ball.setBallVelocity(_board.getBoardNode()->getPhysicsBody()->getVelocity());
+		}
+	}
 }
 
 void LevelManager::spawnBoard()
@@ -190,7 +201,7 @@ void LevelManager::spawnBoard()
 	_board.setBoardPosition(Vec2(visibleSize.width / 2, _ball.getBallContentSize().height * 2));
 }
 
-void LevelManager::spawnBoost(int level, Vec2 position)
+void LevelManager::spawnBoost(const int level,const Vec2 position)
 {
 	if (level != this->level)
 	{
@@ -205,7 +216,7 @@ void LevelManager::spawnBoost(int level, Vec2 position)
 	const float PER_LEVEL_COEF = 0.05f;
 	const float BOOST_POSITIVE = std::clamp(1.f - level * PER_LEVEL_COEF, 0.2f, 0.8f);
 	const float BOOST_NEGATIVE = std::clamp(1.f - BOOST_POSITIVE, 0.2f, 0.8f);
-	const float RAND_BOOST_CHANCE = (rand() % 100 + 1) * 0.01;
+	const float RAND_BOOST_CHANCE = (rand() % 100 + 1) * 0.01f;
 	const float BOOST_CHANCE = 0.25f * maxBoostPerLevel;
 
 	if (RAND_BOOST_CHANCE > BOOST_CHANCE)
@@ -216,7 +227,7 @@ void LevelManager::spawnBoost(int level, Vec2 position)
 	const std::vector<EBoostType> PositiveBoosts = { EBoostType::BALL_UPGRADE, EBoostType::BOARD_PLUS, EBoostType::HP_FREEZ, EBoostType::HP_PLUS, EBoostType::BOARD_CHANGE_TYPE };
 	const std::vector<EBoostType> NegativeBoosts = { EBoostType::BALL_DOWNGRADE, EBoostType::BOARD_MINUS,EBoostType::BOARD_CHANGE_TYPE };
 
-	const float RAND_BOOST_TYPE_EFFECT = (rand() % 100 + 1) * 0.01;
+	const float RAND_BOOST_TYPE_EFFECT = (rand() % 100 + 1) * 0.01f;
 	const bool IS_NEGATIVE_BOOST = RAND_BOOST_TYPE_EFFECT < BOOST_NEGATIVE;
 
 	EBoostType boostType = EBoostType::None;

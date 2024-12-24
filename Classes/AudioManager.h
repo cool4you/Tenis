@@ -1,12 +1,19 @@
 #pragma once
 #include "cocos2d.h"
 
+enum class ESoundType
+{
+	MenuMusic,
+	GameMusic,
+	BallHitSound,
+	BallObsSound
+};
+
 class AudioManager
 {
 public:
-	static void playMusic(const std::string& musicPath, bool loop = true, float volume = 1.f);
-	static void setIsSound(bool sound);
-	static bool getIsSound();
+	static void playMusic(const ESoundType soundType, bool loop = true);
+	static void setIsMuted(bool muted);
+	static bool getIsMuted();
 	static void stopAll();
-private:
 };

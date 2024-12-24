@@ -5,10 +5,10 @@
 class UIManager
 {
 public:
-	void createInfoPanel(int level, int life, int maxLife, bool isLifeFreez, cocos2d::Scene* scene);
-	void updateScore(int gameScore);
-	void redrawLifePanel(int life, int maxLife, bool isLifeFreez);
-	void updateLevelInfo(int level);
+	void createInfoPanel(const int level,const int life,const int maxLife,const bool isLifeFreez,cocos2d::Scene* scene);
+	void updateScore(const int gameScore);
+	void redrawLifePanel(const int life,const int maxLife,const bool isLifeFreez);
+	void updateLevelInfo(const int level);
 
 private:
 	void establishGameField();

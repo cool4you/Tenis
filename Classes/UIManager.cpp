@@ -9,9 +9,14 @@ namespace
 	const int FONT_SIZE = 18;
 }
 
-void UIManager::createInfoPanel(int level,int life,int maxLife,bool isLifeFreez,cocos2d::Scene* scene)
+// Create InfoPanel with score, level and life
+
+void UIManager::createInfoPanel(const int level,const int life,const int maxLife,const bool isLifeFreez,Scene* scene)
 {
-	this->scene = scene;
+	if (scene)
+	{
+		this->scene = scene;
+	}
 
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
@@ -22,7 +27,8 @@ void UIManager::createInfoPanel(int level,int life,int maxLife,bool isLifeFreez,
 	updateLevelInfo(level);
 }
 
-void UIManager::updateScore(int gameScore)
+// Update score and level
+void UIManager::updateScore(const int gameScore)
 {
 	if (scoreLabel)
 	{
@@ -31,7 +37,8 @@ void UIManager::updateScore(int gameScore)
 	}
 }
 
-void UIManager::updateLevelInfo(int level)
+// Update level
+void UIManager::updateLevelInfo(const int level)
 {
 	if (levelInfo)
 	{
@@ -42,15 +49,15 @@ void UIManager::updateLevelInfo(int level)
 
 void UIManager::establishGameField()
 {
-	auto physicsBody = PhysicsBody::createEdgeBox(Size(visibleSize.width, (visibleSize.height * 5.5) / 6), PhysicsMaterial(0.f, 1.f, 0.f));
+	PhysicsBody* physicsBody = PhysicsBody::createEdgeBox(Size(visibleSize.width, (visibleSize.height * 5.5f) / 6.f), PhysicsMaterial(0.f, 1.f, 0.f));
 	physicsBody->setDynamic(false);
 	physicsBody->setCollisionBitmask(0x000001);
 	physicsBody->setContactTestBitmask(true);
 
-	auto backgroundField = Sprite::create("image/backgroundField.jpg");
+	Sprite* backgroundField = Sprite::create("image/backgroundField.jpg");
 	backgroundField->setAnchorPoint(Vec2(0.5f, 1.f));
-	backgroundField->setContentSize(Size(visibleSize.width, (visibleSize.height * 5.5) / 6));
-	backgroundField->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height - (visibleSize.height * 0.5) / 6));
+	backgroundField->setContentSize(Size(visibleSize.width, (visibleSize.height * 5.5f) / 6.f));
+	backgroundField->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height - (visibleSize.height * 0.5f) / 6.f));
 	backgroundField->addComponent(physicsBody);
 
 	scene->addChild(backgroundField, -1);
@@ -69,7 +76,8 @@ void UIManager::establishInfoPanel()
 	scene->addChild(levelInfo, 1);
 }
 
-void UIManager::redrawLifePanel(int life, int maxLife, bool isLifeFreez)
+// Redraw life panel
+void UIManager::redrawLifePanel(const int life,const int maxLife,const bool isLifeFreez)
 {
 	if (life < 0) return;
 
@@ -80,6 +88,7 @@ void UIManager::redrawLifePanel(int life, int maxLife, bool isLifeFreez)
 
 	lifeNode = Node::create();
 
+	// Create a sprite based on a variable "isLifeFreez"
 	std::string loseSpritePath = isLifeFreez ? "image/hp_lose_freezed.png" : "image/hp_lose.png";
 	std::string normalSpritePath = isLifeFreez ? "image/hp_freezed.png" : "image/hp.png";
 

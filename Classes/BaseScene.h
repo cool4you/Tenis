@@ -5,10 +5,9 @@ class BaseScene : public cocos2d::Scene
 {
 public:
 	// Avoid crash on game exit while transitioning between scenes 
-
 	void onEnterTransitionDidFinish() override;
 	void onEnter() override;
-private:
 
+private:
 	bool bExitAfterTransition = true;
 };

@@ -22,7 +22,8 @@ bool MainMenuScene::init()
 
 	establishBackground();
 	createMenuButtons();
-	AudioManager::playMusic("audio/menu_music.mp3", true, 0.5f);
+
+	AudioManager::playMusic(ESoundType::MenuMusic, true);
 
 	return true;
 }
@@ -57,15 +58,15 @@ void MainMenuScene::createMenuButtons()
 	Vector<MenuItem*> menuButtonItems = {};
 
 	auto subsribeToMenuButton = [](const ESceneType sceneType, const std::string& buttonTitle) -> MenuItemLabel*
-	{
-		MenuItemLabel* menuItem = MenuItemLabel::create(Label::createWithTTF(buttonTitle, FONT, FONT_SIZE),
-			[=](Ref* sender)
-			{
-				sceneType == ESceneType::None ? Director::getInstance()->end() : SceneManager::runScene(sceneType);
-			});
+		{
+			MenuItemLabel* menuItem = MenuItemLabel::create(Label::createWithTTF(buttonTitle, FONT, FONT_SIZE),
+				[=](Ref* sender)
+				{
+					sceneType == ESceneType::None ? Director::getInstance()->end() : SceneManager::runScene(sceneType);
+				});
 
-		return menuItem;
-	};
+			return menuItem;
+		};
 
 	for (const auto& buttonInfo : buttonsMap)
 	{
@@ -82,12 +83,12 @@ void MainMenuScene::createMenuButtons()
 	cocos2d::ui::Button* button = cocos2d::ui::Button::create("image/sound_on.png", "image/sound_off.png");
 	button->setAnchorPoint(Vec2(0.f, 0.f));
 	button->setPosition(Vec2(origin.x + button->getContentSize().width / 2, origin.y + button->getContentSize().height / 2));
-	button->loadTextureNormal(AudioManager::getIsSound ? "image/sound_on.png" : "image/sound_off.png");
+	button->loadTextureNormal(AudioManager::getIsMuted() ? "image/sound_off.png" : "image/sound_on.png");
 
 	button->addClickEventListener([button](Ref* sender) {
-		bool isSoundEnabled = !AudioManager::getIsSound();
-		AudioManager::setIsSound(isSoundEnabled);
-		button->loadTextureNormal(isSoundEnabled ? "image/sound_on.png" : "image/sound_off.png");
+		bool isSoundEnabled = !AudioManager::getIsMuted();
+		AudioManager::setIsMuted(isSoundEnabled);
+		button->loadTextureNormal(isSoundEnabled ? "image/sound_off.png" : "image/sound_on.png");
 		});
 
 	this->addChild(button);

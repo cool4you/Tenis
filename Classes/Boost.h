@@ -18,15 +18,18 @@ class Boost
 public:
     Boost();
     ~Boost();
-    void init(cocos2d::Vec2 position, EBoostType boostType);
+
+    void init(const cocos2d::Vec2 position, const EBoostType boostType);
     void boostClear();
-    void setPosition(cocos2d::Vec2 position);
+
+    void setPosition(const cocos2d::Vec2 position);
+
     cocos2d::Sprite* getBoostSprite() const;
     EBoostType getBoostType() const;
 private:
-
     void createBoost();
     void createBoostPhysicsBody();
+
     cocos2d::Sprite* boostSprite = nullptr;
     EBoostType boostType;
 };
